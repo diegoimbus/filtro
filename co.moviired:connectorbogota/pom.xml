@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact -->
+    <artifactId>connectorbogota</artifactId>
+    <version>1.1.2</version>
+    <packaging>jar</packaging>
+
+    <!-- Identification -->
+    <name>Bank Services: ${project.artifactId}</name>
+    <description>Connector for Banco de Bogota</description>
+
+    <!-- Project -->
+    <parent>
+        <groupId>co.moviired</groupId>
+        <artifactId>bank-services</artifactId>
+        <version>1.0.1</version>
+    </parent>
+
+    <!-- Libraries versions -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <nexus-url>http://192.168.29.50:8087/repository/maven-group/</nexus-url>
+
+        <!-- Libraries versions -->
+        <jpos.version>2.1.3</jpos.version>
+        <movii-base.version>0.1.1</movii-base.version>
+
+        <!-- Application init class -->
+        <start-class>co.moviired.microservice.ConnectorBogotaApplication</start-class>
+    </properties>
+
+    <!-- Maven: Dependencies -->
+    <dependencies>
+        <!-- SpringFramework -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- MOVIIRED: Project Base -->
+        <dependency>
+            <groupId>co.moviired</groupId>
+            <artifactId>movii-base</artifactId>
+            <version>${movii-base.version}</version>
+        </dependency>
+        <!-- ISO: JPos -->
+        <dependency>
+            <groupId>org.jpos</groupId>
+            <artifactId>jpos</artifactId>
+            <version>${jpos.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sleepycat</groupId>
+                    <artifactId>je</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <!-- Plugins -->
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <!-- Maven: Compile -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Repackage SpringBoot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Docker -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>0.9.11</version>
+                <configuration>
+                    <extraDirectory>${project.basedir}/src/main/jib</extraDirectory>
+                    <to>
+                        <image>registry.gitlab.com/movii-org/bank-services/connectorbogota</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-server</jvmFlag>
+                            <jvmFlag>-Xms2G</jvmFlag>
+                            <jvmFlag>-Xmx2G</jvmFlag>
+                            <jvmFlag>-XX:MaxMetaspaceSize=1G</jvmFlag>
+                            <jvmFlag>-XX:+CMSClassUnloadingEnabled</jvmFlag>
+                            <jvmFlag>-XX:+UseG1GC</jvmFlag>
+                            <jvmFlag>-XX:+OptimizeStringConcat</jvmFlag>
+                            <jvmFlag>-XX:+UseStringDeduplication</jvmFlag>
+                            <jvmFlag>-XX:+UseLWPSynchronization</jvmFlag>
+                            <jvmFlag>-Djavax.xml.accessExternalDTD=all</jvmFlag>
+                            <jvmFlag>-Dfile.encoding=UTF-8</jvmFlag>
+                            <jvmFlag>-Dspring.output.ansi.enabled=always</jvmFlag>
+                            <jvmFlag>-Duser.timezone=America/Bogota</jvmFlag>
+                            <jvmFlag>-Dspring.config.location=/app/config/application.yml</jvmFlag>
+                        </jvmFlags>
+                        <useCurrentTimestamp>true</useCurrentTimestamp>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <format>Docker</format>
+                    </container>
+                </configuration>
+            </plugin>
+
+            <!-- Clean files -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/jib/app/config</directory>
+                            <includes>
+                                <include>**/*.yml</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- Copy the application.yml -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>COPIA NECESARIA PARA EJECUTAR EL DOCKER DEL APLICATIVO</echo>
+                                <echo>Se copia del archivo application.yml a la ruta
+                                    '$(basedir)/src/main/jib/app/config'
+                                </echo>
+                                <echo>Debido a que esta ruta se copia en la raiz del docker cuando levanta.</echo>
+                                <copy overwrite="true" file="src/main/resources/application.yml"
+                                      tofile="${basedir}/src/main/jib/app/config/application.yml"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!--Reporting-->
+    <reporting>
+        <plugins>
+            <!--Reports-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.0.0-M4</version>
+            </plugin>
+            <!--Find Bugs-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.5</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <!-- Personalized repositories -->
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+        <!-- Moviired repository -->
+        <repository>
+            <id>thirdparty</id>
+            <name>moviired</name>
+            <url>${nexus-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>thirdparty</id>
+            <name>moviired</name>
+            <url>${nexus-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

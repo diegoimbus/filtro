@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact -->
+    <artifactId>gateway</artifactId>
+    <version>2.3.0</version>
+    <packaging>jar</packaging>
+
+    <!-- Identification -->
+    <name>Security Layer: Gateway</name>
+    <description>Security layer's GATEWAY for Moviired plaftform</description>
+
+    <!-- Company information -->
+    <organization>
+        <name>Movii / Moviired, SAS</name>
+        <url>www.moviired.co</url>
+    </organization>
+
+    <!-- Developer's Team information -->
+    <developers>
+        <developer>
+            <name>Ronel Rivas</name>
+            <email>ronel.rivas@moviired.co</email>
+            <roles>
+                <role>Develpment Team Director</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rodolfo Rivas</name>
+            <email>rodolfo.rivas@moviired.co</email>
+            <roles>
+                <role>Development leader</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- QA Team Information -->
+    <contributors>
+        <contributor>
+            <name>Laura Tinjaca</name>
+            <email>laura.tinjaca@moviired.co</email>
+            <roles>
+                <role>QA Team Coordinator</role>
+            </roles>
+        </contributor>
+    </contributors>
+
+    <!-- Project -->
+    <parent>
+        <groupId>co.moviired</groupId>
+        <artifactId>security-layer</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <!-- Libraries versions -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+
+        <movii-base.version>1.1.5</movii-base.version>
+        <movii-connectors.version>1.0.16</movii-connectors.version>
+
+        <nexus-url>http://192.168.29.50:8087/repository/maven-group/</nexus-url>
+        <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
+    </properties>
+
+    <!-- Maven: Dependencies -->
+    <dependencies>
+        <!-- Project Base -->
+        <dependency>
+            <groupId>co.moviired</groupId>
+            <artifactId>movii-base</artifactId>
+            <version>${movii-base.version}</version>
+        </dependency>
+
+        <!-- MOVIIRED: Connectors -->
+        <dependency>
+            <groupId>co.moviired</groupId>
+            <artifactId>connectors</artifactId>
+            <version>${movii-connectors.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+
+        <!-- log -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.2</version>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!--Reporting Jenkins-->
+    <reporting>
+        <plugins>
+            <!--Reports-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.0.0-M4</version>
+            </plugin>
+            <!-- SpotBugs-->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.0.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
+    <!-- Plugins -->
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!-- Jenkins Rerport HTML -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.0</version>
+            </plugin>
+            <!-- SpotBugs -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>0.9.11</version>
+                <configuration>
+                    <extraDirectory>${project.basedir}/src/main/jib</extraDirectory>
+                    <from>
+                        <image>openjdk:11.0.5-jre</image>
+                    </from>
+                    <to>
+                        <image>registry.gitlab.com/movii-org/gateway/${project.artifactId}</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-server</jvmFlag>
+                            <jvmFlag>-Xms1G</jvmFlag>
+                            <jvmFlag>-Xms3m</jvmFlag>
+                            <jvmFlag>-Duser.timezone=America/Bogota</jvmFlag>
+                            <jvmFlag>-XX:+CMSClassUnloadingEnabled</jvmFlag>
+                            <jvmFlag>-XX:+UseG1GC</jvmFlag>
+                            <jvmFlag>-XX:+OptimizeStringConcat</jvmFlag>
+                            <jvmFlag>-Djavax.xml.accessExternalDTD=all</jvmFlag>
+                            <jvmFlag>-Dfile.encoding=UTF-8</jvmFlag>
+                            <jvmFlag>-Dspring.output.ansi.enabled=always</jvmFlag>
+                            <jvmFlag>-Dspring.config.location=/app/config/application.yml</jvmFlag>
+                        </jvmFlags>
+                        <useCurrentTimestamp>true</useCurrentTimestamp>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <format>Docker</format>
+                    </container>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>COPIA NECESARIA PARA EJECUTAR EL DOCKER DEL APLICATIVO</echo>
+                                <echo>Se copia del archivo application.yml a la ruta
+                                    '$(basedir)/src/main/jib/app/config'
+                                </echo>
+                                <echo>Debido a que esta ruta se copia en la raiz del docker cuando levanta.</echo>
+                                <copy overwrite="true" file="src/main/resources/application-prod.yml"
+                                      tofile="${basedir}/src/main/jib/app/config/application.yml"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- Personalized repositories -->
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+        <!-- Moviired repository -->
+        <repository>
+            <id>thirdparty</id>
+            <name>moviired</name>
+            <url>${nexus-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>thirdparty</id>
+            <name>moviired</name>
+            <url>${nexus-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>
+

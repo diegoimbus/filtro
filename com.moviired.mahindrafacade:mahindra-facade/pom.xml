@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.moviired.mahindrafacade</groupId>
+    <artifactId>mahindra-facade</artifactId>
+    <version>1.0.0</version>
+
+    <!-- Identification -->
+    <name>mahindra-facade</name>
+    <description>Mahindra Facade project</description>
+
+    <!-- Company information -->
+    <organization>
+        <name>Moviired, SAS</name>
+        <url>www.moviired.co</url>
+    </organization>
+
+    <!-- Developer's Team information -->
+    <developers>
+        <developer>
+            <name>Ronel Rivas</name>
+            <email>ronel.rivas@moviired.co</email>
+            <roles>
+                <role>Develpment Team Director</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rodrigo Neme</name>
+            <email>rodrigo.neme@moviired.co</email>
+            <roles>
+                <role>Backend Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>David Robles</name>
+            <email>david.robles@sbd.com.co</email>
+            <roles>
+                <role>Backend Java Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- QA Team Information -->
+    <contributors>
+        <contributor>
+            <name>Laura Tinjaca</name>
+            <email>laura.tinjaca@moviired.co</email>
+            <roles>
+                <role>QA Team Coordinator</role>
+            </roles>
+        </contributor>
+    </contributors>
+
+    <!-- Parent Project -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <!-- Project properties -->
+    <properties>
+        <java.version>11</java.version>
+        <oracle.version>12.1.0.2</oracle.version>
+        <movii-connectors.version>1.0.16</movii-connectors.version>
+        <movii-base.version>1.1.4</movii-base.version>
+        <jaxb-impl.version>2.1.2</jaxb-impl.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <nexus-url>http://192.168.29.50:8087/repository/maven-group/</nexus-url>
+    </properties>
+
+    <!-- Global libraries dependencies -->
+    <dependencies>
+
+        <!-- MOVIIRED: Project Base -->
+        <dependency>
+            <groupId>co.moviired</groupId>
+            <artifactId>movii-base</artifactId>
+            <version>${movii-base.version}</version>
+        </dependency>
+
+        <!-- MOVIIRED: Connectors -->
+        <dependency>
+            <groupId>co.moviired</groupId>
+            <artifactId>connectors</artifactId>
+            <version>${movii-connectors.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- fasterxml -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb-impl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
+        </dependency>
+
+        <!-- Mongo db -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+        </dependency>
+
+        <!-- junit -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+
+            <!-- Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- SpringBoot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Docker -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>0.9.11</version>
+                <configuration>
+                    <extraDirectory>${project.basedir}/src/main/jib</extraDirectory>
+                    <from>
+                        <image>openjdk:11.0.5-jre</image>
+                    </from>
+                    <to>
+                        <image>registry.gitlab.com/movii-org/${project.artifactId}</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+                    </to>
+                    <allowInsecureRegistries>true</allowInsecureRegistries>
+                    <extraDirectory>src/main/jib</extraDirectory>
+                    <container>
+                        <useCurrentTimestamp>true</useCurrentTimestamp>
+                        <jvmFlags>
+                            <jvmFlag>-server</jvmFlag>
+                            <jvmFlag>-Xms2G</jvmFlag>
+                            <jvmFlag>-Xmx2G</jvmFlag>
+                            <jvmFlag>-XX:MaxMetaspaceSize=1G</jvmFlag>
+                            <jvmFlag>-XX:+CMSClassUnloadingEnabled</jvmFlag>
+                            <jvmFlag>-XX:+UseG1GC</jvmFlag>
+                            <jvmFlag>-XX:+OptimizeStringConcat</jvmFlag>
+                            <jvmFlag>-XX:+UseStringDeduplication</jvmFlag>
+                            <jvmFlag>-XX:+UseLWPSynchronization</jvmFlag>
+                            <jvmFlag>-Djavax.xml.accessExternalDTD=all</jvmFlag>
+                            <jvmFlag>-Dfile.encoding=UTF-8</jvmFlag>
+                            <jvmFlag>-Dspring.output.ansi.enabled=always</jvmFlag>
+                            <jvmFlag>-Duser.timezone=America/Bogota</jvmFlag>
+                            <jvmFlag>-Dspring.config.location=/app/config/</jvmFlag>
+                        </jvmFlags>
+
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <format>Docker</format>
+                    </container>
+                </configuration>
+            </plugin>
+
+            <!-- Copy the application.yml -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>COPIA NECESARIA PARA EJECUTAR EL DOCKER DEL APLICATIVO</echo>
+                                <echo>
+                                    Se copia del archivo application.yml a la ruta'$ (basedir)/src/main/jib/app/config'
+                                </echo>
+                                <echo>Debido a que esta ruta se copia en la raiz del docker cuando levanta.</echo>
+                                <copy overwrite="true" file="src/main/resources/application-prod.yml"
+                                      tofile="${basedir}/src/main/jib/app/config/application.yml"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Jenkins Rerport HTML -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.0</version>
+            </plugin>
+
+            <!-- SpotBugs -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.0.0</version>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!--Reporting -->
+    <reporting>
+        <plugins>
+            <!--Reports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <outputDirectory>${basedir}/target</outputDirectory>
+                </configuration>
+            </plugin>
+            <!-- SpotBugs-->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.0.0</version>
+            </plugin>
+
+        </plugins>
+    </reporting>
+
+    <!-- Personalized repositories -->
+    <repositories>
+
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+
+        <!-- Moviired repository -->
+        <repository>
+            <id>thirdparty</id>
+            <name>moviired</name>
+            <url>${nexus-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>thirdparty</id>
+            <name>moviired</name>
+            <url>${nexus-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

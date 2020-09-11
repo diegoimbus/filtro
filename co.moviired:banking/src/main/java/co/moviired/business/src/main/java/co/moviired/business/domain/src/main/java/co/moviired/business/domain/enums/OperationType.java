@@ -1,0 +1,19 @@
+package co.moviired.business.domain.enums;
+
+public enum OperationType {
+    CASH_IN,
+    DEPOSIT,
+    QUERY,
+    QUERY_BILL,
+    QUERY_OBLIGATION,
+    QUERY_WITHDRAWAL,
+    PAY_BILL,
+    PAY_OBLIGATION,
+    VALIDATE_BILLPAYMENT,
+    VALIDATE_BILLPAYMENT_EANCODE,
+    VALIDATE_BILLPAYMENT_REFERENCE,
+    LOGIN_USER,
+    WITHDRAWAL
+
+}
+
